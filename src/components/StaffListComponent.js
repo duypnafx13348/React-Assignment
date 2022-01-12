@@ -1,52 +1,23 @@
-import React, { Component } from 'react';
-import { Card, CardText, CardBody, CardTitle } from 'reactstrap';
-import dateFormat from 'dateformat';
+import React from 'react';
+import { Card, CardImg, CardTitle } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
-
-class StaffList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedDish: null
-        }
+    function RenderStaffList({staff}) {
+        return(
+            <Card>
+              <Link to={`/stafflist/${staff.id}`}>
+                <CardImg width="100%" src={staff.image} alt={staff.name} />
+                <CardTitle heading className="align-center">{staff.name}</CardTitle>
+              </Link>
+            </Card>
+        );
     }
 
-    onDishSeclect(staff) {
-        this.setState({ selectedDish: staff});
-    }
-
-    renderStaff(staff) {
-        if (staff != null) {
-            return(
-                <Card className="col-12 col-md-12 col-lg-12">
-                    {/* <CardImg width="100%" src={staff.image} alt={staff.name} /> */}
-                    <CardBody>
-                        <CardTitle heading>Họ và tên: {staff.name}</CardTitle>
-                        <CardText>Ngày sinh: {dateFormat(staff.doB, "dd/mm/yyyy")}</CardText>
-                        <CardText>Ngày vào công ty: {dateFormat(staff.startDate, "dd/mm/yyyy")}</CardText>
-                        <CardText>Phòng ban: {staff.department.name}</CardText>
-                        <CardText>Số ngày nghỉ còn lại: {staff.annualLeave}</CardText>
-                        <CardText>Số ngày đã làm thêm: {staff.overTime}</CardText>
-                    </CardBody>
-                </Card>
-            )
-        } else {
-            return(
-                <div></div>
-            );
-        }
-    }
-
-    render() {
-        const stafflist = this.props.staffs.map((staff) => {
+    const StaffList = (props) => {
+        const stafflist = props.staffs.map((staff) => {
             return (
-              <div key={staff.id} className="col-12 col-md-6 col-lg-4">
-                <Card onClick={() => this.onDishSeclect(staff)}>
-                    {/* <CardImg width="100%" src={staff.image} alt={staff.name} /> */}
-                    {/* <CardImgOverlay> */}
-                    <CardTitle heading>{staff.name}</CardTitle>
-                  {/* </CardImgOverlay> */}
-                </Card>
+              <div key={staff.id} className="col-sm-6 col-md-4 col-lg-2">
+                <RenderStaffList staff={staff} />
               </div>
             );
         });
@@ -56,12 +27,8 @@ class StaffList extends Component {
             <div className="row">
                 {stafflist}
             </div>
-            <div className='row'>
-                {this.renderStaff(this.state.selectedDish)}
-            </div>
           </div>
-        );
+        );        
     }
-}
 
 export default StaffList;
