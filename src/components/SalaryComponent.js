@@ -7,14 +7,14 @@ const overTimeSalary = 200000;
 
 function Salary(props) {
 
-    const salaries = props.staffs.map((staff) => {
-        const salary = (Math.round(parseFloat(staff.salaryScale)) * basicSalary) + (parseFloat(staff.overTime) * overTimeSalary);
+    const salaries = props.staffs.staffs.map((staff) => {
+        const salary = (parseFloat(staff.salaryScale) * basicSalary) + (parseFloat(staff.overTime) * overTimeSalary);
         return(
             <Card key={staff.id} className="col-12 col-md-6 col-lg-4 border">
                 <CardBody>
                     <h2>{staff.name}</h2>
                     <CardText>Mã nhân viên: {staff.id}</CardText>
-                    <CardText>Hệ số lương: {Math.round(staff.salaryScale)}</CardText>
+                    <CardText>Hệ số lương: {staff.salaryScale}</CardText>
                     <CardText>Số giờ làm thêm: {staff.overTime}</CardText>
                     <Breadcrumb>
                         <BreadcrumbItem>
@@ -34,9 +34,9 @@ function Salary(props) {
                     </BreadcrumbItem>
                     <BreadcrumbItem active>Bảng Lương</BreadcrumbItem>
                 </Breadcrumb>
-                <div className="row">
-                    {salaries}
-                </div>
+            </div>
+            <div className="row">
+                {salaries}
             </div>
         </div>
     );

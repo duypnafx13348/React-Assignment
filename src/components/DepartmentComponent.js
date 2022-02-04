@@ -1,16 +1,19 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { Loading } from './LoadingComponent';
 
 function Department(props) {
 
-    const jobs = props.departments.map((job) => {
-        return(
-            <div className="col-12 col-md-6 col-lg-4 border">
-            <h1>{job.name}</h1>
-            <p>Số lượng nhân viên: {job.numberOfStaff}</p>
-            </div>
-        );
+    const jobs = props.departments.departments.map((job) => {
+            return(
+                <div className="col-12 col-md-6 col-lg-4 border">
+                    <Link to={`/department/${job.id}`}>
+                        <h1>{job.name}</h1>
+                        <p>Số lượng nhân viên: {job.numberOfStaff}</p>
+                    </Link>
+                </div>
+            );
     });
     return(
         <div className="container">
@@ -21,9 +24,9 @@ function Department(props) {
                     </BreadcrumbItem>
                     <BreadcrumbItem active>Phòng Ban</BreadcrumbItem>
                 </Breadcrumb>
-                <div className="row">
-                    {jobs}
-                </div>
+            </div>
+            <div className="row">
+                {jobs}
             </div>
         </div>
     );

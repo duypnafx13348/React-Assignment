@@ -1,51 +1,37 @@
-import React, { Component } from 'react';
-import { Card, CardImg, CardTitle, Button, Modal, ModalHeader, ModalBody, Label, Col, Row, Form, FormGroup, Input, FormFeedback } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import React, { Component } from "react";
 import { Control, LocalForm, Errors } from 'react-redux-form';
-import { Loading } from './LoadingComponent';
-import { baseUrl } from '../shared/baseUrl';
-
-    const RenderStaffList = ({staff, onDeleteStaff}) => {
-        return(
-            <Card>
-              <Link to={`/stafflist/${staff.id}`}>
-                <CardImg width="100%" src={staff.image} alt={staff.name} />
-                <CardTitle heading className="align-center">{staff.name}</CardTitle>
-              </Link>
-                <Button type="submit" color="danger" onClick={() => onDeleteStaff(staff.id)}>Delete</Button>
-            </Card>
-        );
-    }
+import { Button, Modal, ModalHeader, ModalBody, Label, Col, Row, Input, FormFeedback } from 'reactstrap';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => (val) && (val.length >= len);
 
-class StaffList extends Component {
+class FromUpdate extends Component {
+    constructor(props) {
+        super(props);
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      doB: '',
-      startDate: '',
-      othername: '',
-      departmentId: "Dept01",
-      isModalOpen: false,
-      touched: {
-        name: false,
-        doB: false,
-        startDate: false
-      }
+        this.state = {
+            staff: props.staff,
+            name: '',
+            doB: '',
+            startDate: '',
+            departmentId: 'Dept01',
+            salaryScale: 1,
+            annualLeave: 0,
+            overTime: 0,
+            isModalOpen: false,
+            touched: {
+                name: false,
+                doB: false,
+                startDate: false
+            }
+        }
+        this.handleChange = this.handleChange.bind(this);
+        this.handleBlur = this.handleBlur.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
-
-      this.handleChange = this.handleChange.bind(this);
-      this.handleBlur = this.handleBlur.bind(this);
-      this.toggleModal = this.toggleModal.bind(this);
-      this.handleSearch = this.handleSearch.bind(this);
-      this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
   // Tắt mở Modal
   toggleModal() {
     this.setState({
@@ -84,18 +70,25 @@ class StaffList extends Component {
   // Xử lý khi click vào button Thêm thì sẽ gọi đến hàm này
   handleSubmit = (values) => {
       this.toggleModal();
-    const newStaff = {
+      console.log(values)
+    const updateNewStaff = {
       // id: Math.floor(Math.random() * 1000 + 1),
-      name: values.name,
+      id: this.state.staff.id,
+      name: this.state.staff.name,
       doB: this.state.doB,
       startDate: this.state.startDate,
-      salaryScale: parseFloat(values.salaryScale),
-      departmentId: values.departmentId,
-      annualLeave: parseFloat(values.annualLeave),
-      overTime: parseFloat(values.overTime),
+      salaryScale: this.state.staff.salaryScale,
+      departmentId: this.state.staff.departmentId,
+      annualLeave: this.state.staff.annualLeave,
+      overTime: this.state.staff.overTime,
+      // name: values.name,
+      // salaryScale: values.salaryScale,
+      // department: values.department,
+      // annualLeave: values.annualLeave,
+      // overTime: values.overTime,
       image: '/asset/images/alberto.png'
     };
-    this.props.onAddStaff(newStaff);
+    this.props.onUpdate(updateNewStaff);
   }
   
   // Xử lý khi nhập chưa đủ độ dài vào input
@@ -115,79 +108,20 @@ class StaffList extends Component {
   }
 
     render() {
-
-      const errors = this.validate(this.state.doB, this.state.startDate);
-
-        const stafflist = this.props.staffs.staffs
-        .filter((checkname) => {
-          if (this.state.othername === "") return checkname;
-          else if (checkname.name.toLowerCase().includes(this.state.othername.toLowerCase())) return checkname;
-          return 0;
-        })
-        .map((staff) => {
-            return (
-              <div key={staff.id} className="col-sm-6 col-md-4 col-lg-2">
-                <RenderStaffList staff={staff} onDeleteStaff={this.props.onDeleteStaff} />
-              </div>
-            );
-        });
-
-        if (this.props.staffs.isLoading) {
-          return(
-              <div className="container">
-                  <div className="row">
-                      <Loading />
-                  </div>
-              </div>
-          );
-        }
-        else if (this.props.staffs.errMess) {
-            return(
-                <div className="container">
-                    <div className="row">
-                        <h4>{this.props.staffs.errMess}</h4>
-                    </div>
-                </div>
-            );
-        }
-        else 
-          return(
-            <div className="container">
-                <div className="row">
-                  <div className="col-9 col-md-3 col-lg-3">
-                    <h3>Nhân Viên</h3>
-                  </div>
-                  <div className="col-3 col-md-3 col-lg-3 mt-1">
-                    <Button onClick={this.toggleModal}>
-                      <span className="fa fa-user-plus fa-lg"></span>
-                    </Button>
-                  </div>
-
-                  {/* Chức năng tìm kiếm nhân viên */}
-                  <Form onSubmit={this.handleSearch} className="col-12 col-md-6 col-lg-6">
-                    <FormGroup className="row">
-                      <div className="col-9 col-md-9 col-lg-9 mt-1">
-                        <Input
-                          type="text"
-                          name="othername"
-                          innerRef={(input) => this.othername = input}
-                          />
-                      </div>
-                      <div className="col-3 col-md-3 col-lg-3 mt-1">
-                        <Button type="submit">Tìm</Button>
-                      </div>
-                    </FormGroup>
-                  </Form>
-
-                  {/* ModalBox và Chức năng thêm nhân viên */}
-                  <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-                    <ModalHeader toggle={this.toggleModal}>Thêm Nhân Viên</ModalHeader>
+      // console.log(this.state.staff);
+        const errors = this.validate(this.state.doB, this.state.startDate);
+        return(
+            <React.Fragment>
+            <Button onClick={this.toggleModal}>Update</Button>
+            <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                    <ModalHeader toggle={this.toggleModal}>Cập nhật Nhân Viên</ModalHeader>
                     <ModalBody>
                       <LocalForm onSubmit={(values) => this.handleSubmit (values)}>
                         <Row className="form-group">
                           <Label htmlFor="name">Tên</Label>
                           <Col>
                           <Control.text model=".name" id="name" name="name"
+                             placeholder="Vui lòng nhập Họ và Tên"
                             className="form-control"
                             validators={{
                               required, minLength: minLength(3), maxLength: maxLength(30)
@@ -272,21 +206,14 @@ class StaffList extends Component {
                           </Col>
                         </Row>
                         <Row className="form-group">
-                          <Button type="submit" color="primary">Thêm</Button>
+                          <Button type="submit" color="primary">Update</Button>
                         </Row>                                       
                       </LocalForm>
                     </ModalBody>
                   </Modal>
-                </div>
-
-              <div className="row">
-                {stafflist}
-              </div>
-            </div>
-
-            );
-      }
+                </React.Fragment>
+        )
     }
-    
+}
 
-export default StaffList;
+export default FromUpdate;

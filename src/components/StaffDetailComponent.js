@@ -1,9 +1,14 @@
 import React from "react";
-import { CardImg, CardText, CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { CardText, CardImg, CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import FormUpdate from './FormUpdateComponent';
 import { Link } from 'react-router-dom';
 import dateFormat from 'dateformat';
+import { Loading } from './LoadingComponent';
 
-function RenderStaff({staff}) {
+
+function RenderStaff({staff, department}) {
+    // console.log(staff.departmentId);
+    // console.log(dept.name);
     return(
         <div className="col-12">
             <div className="row">
@@ -11,12 +16,13 @@ function RenderStaff({staff}) {
                     <CardImg width="100%" src={staff.image} alt={staff.name} />
                 </div>
                 <div className="col-12 col-md-8 col-lg-9">
-                        <CardTitle heading>Họ và tên: {staff.name}</CardTitle>
-                        <CardText>Ngày sinh: {dateFormat(staff.doB, "dd/mm/yyyy")}</CardText>
-                        <CardText>Ngày vào công ty: {dateFormat(staff.startDate, "dd/mm/yyyy")}</CardText>
-                        <CardText>Phòng ban: {staff.department.name || staff.department}</CardText>
-                        <CardText>Số ngày nghỉ còn lại: {staff.annualLeave}</CardText>
-                        <CardText>Số ngày đã làm thêm: {staff.overTime}</CardText>
+                    <CardTitle heading>Họ và tên: {staff.name}</CardTitle>
+                    <CardText>Mã số nhân viên: {staff.id}</CardText>
+                    <CardText>Ngày sinh: {dateFormat(staff.doB, "dd/mm/yyyy")}</CardText>
+                    <CardText>Ngày vào công ty: {dateFormat(staff.startDate, "dd/mm/yyyy")}</CardText>
+                    <CardText>Phòng ban: {department.name}</CardText>
+                    <CardText>Số ngày nghỉ còn lại: {staff.annualLeave}</CardText>
+                    <CardText>Số ngày đã làm thêm: {staff.overTime}</CardText>
                 </div>
             </div>
         </div>
@@ -24,7 +30,25 @@ function RenderStaff({staff}) {
 }
 
 const StaffDetail = (props) => {
-    if(props.staff != null) {
+    if (props.isLoading) {
+        return(
+            <div className="container">
+                <div className="row">
+                    <Loading />
+                </div>
+            </div>
+        );
+    }
+    else if (props.errMess) {
+        return(
+            <div className="container">
+                <div className="row">
+                    <h4>{props.errMess}</h4>
+                </div>
+            </div>
+        );
+    }
+    else if (props.staff != null) {
         return(
             <div className="container">
                 <div className="row">
@@ -40,7 +64,9 @@ const StaffDetail = (props) => {
                     </div>                    
                 </div>
                 <div className="row">
-                    <RenderStaff staff={props.staff} />
+                    <RenderStaff staff={props.staff}
+                    department={props.department.filter((dept) => dept.id === props.staff.departmentId)[0]} />
+                    <FormUpdate onUpdate={props.onUpdateStaff} staff={props.staff} />
                 </div>
             </div>
         );

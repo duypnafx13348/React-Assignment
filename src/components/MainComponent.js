@@ -1,57 +1,88 @@
 import React, { Component } from 'react';
 import Header from './HeaderComponent';
 import StaffList from './StaffListComponent';
-import Staff from './StaffDetailComponent';
+import StaffDetail from './StaffDetailComponent';
 import Department from './DepartmentComponent';
+import DepartmentDetail from './DepartmentDetailComponent';
 import Salary from './SalaryComponent';
 import Footer from './FooterComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-// import { STAFFS } from '../shared/staffs';
-// import { DEPARTMENTS } from '../shared/staffs';
-
+import { fetchStaffs, fetchDepartments, fetchStaffsSalary, postStaff, deleteStaff, updateStaff } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
   return {
     staffs: state.staffs,
-    departments: state.departments
+    departments: state.departments,
+    staffsSalary: state.staffsSalary
   }
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  postStaff: (staff) => dispatch(postStaff(staff)),
+  fetchStaffs: () => {dispatch(fetchStaffs())},
+  fetchDepartments: () => {dispatch(fetchDepartments())},
+  fetchStaffsSalary: () => {dispatch(fetchStaffsSalary())},
+  deleteStaff: (id) => dispatch(deleteStaff(id)),
+  updateStaff: (staff) => dispatch(updateStaff(staff)),
+});
 class Main extends Component {
 
   constructor(props) {
     super(props);
-    // this.state = {
-    //   staffs: STAFFS,
-    //   departments: DEPARTMENTS
-    // }
-    this.handleAddStaff = this.handleAddStaff.bind(this);
+    // this.handleAddStaff = this.handleAddStaff.bind(this);
   }
 
   // Xử lí hàm thêm nhân viên
-  handleAddStaff(newStaff) {
-    const addStaff = this.props.staffs.push(newStaff)
-    this.setState({
-      staffs: [...this.props.staffs, addStaff]
-    });
+  // handleAddStaff(newStaff) {
+  //   const addStaff = this.props.staffs.staffs.push(newStaff)
+  //   this.setState({
+  //     staffs: [...this.props.staffs, addStaff]
+  //   });
+  // }
+
+  componentDidMount() {
+    this.props.fetchStaffs();
+    this.props.fetchDepartments();
+    this.props.fetchStaffsSalary();
   }
   
   render() {
     
     const StaffWithId = ({match}) => {
-      console.log(parseInt(match.params.staffId))
-
         return(
-            <Staff staff={this.props.staffs.filter((staff) => staff.id === parseInt(match.params.staffId,10))[0]} />
+          <StaffDetail staff={this.props.staffs.staffs.filter((staff) => staff.id === parseInt(match.params.staffId,10))[0]}
+          isLoading={this.props.staffs.isLoading}
+          errMess={this.props.staffs.errMess}
+          postStaff={this.props.postStaff}
+          department={this.props.departments.departments}
+          onUpdateStaff={this.props.updateStaff}
+          />
         );
     }
+
+    const DepartmentWithId = ({match}) => {
+      return(
+        <DepartmentDetail department={this.props.departments.departments.filter((department) => department.id === match.params.departmentId)[0]}
+        staff={this.props.staffs.staffs.filter((staff) => staff.departmentId === match.params.departmentId)}
+        />
+      );
+    }
+
     return (
         <div className="App">
         <Header />
         <Switch>
-        <Route exact path="/stafflist" component={() => <StaffList staffs={this.props.staffs} onAddStaff={this.handleAddStaff} />} />
-        <Route path="/stafflist/:staffId" component={StaffWithId} /> 
+        <Route exact path="/stafflist" component={() => 
+            <StaffList 
+              staffs={this.props.staffs} 
+              onAddStaff={this.props.postStaff} 
+              onDeleteStaff={this.props.deleteStaff}
+            />}
+         />
+        <Route path="/stafflist/:staffId" component={StaffWithId} />
         <Route exact path="/department" component={() => <Department departments={this.props.departments} />} />
+        <Route path="/department/:departmentId" component={DepartmentWithId} />
         <Route exact path="/salary" component={() => <Salary staffs={this.props.staffs} />} />
         <Redirect to="/stafflist" />
         </Switch>
@@ -61,4 +92,4 @@ class Main extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(Main));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
