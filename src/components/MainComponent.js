@@ -29,11 +29,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 class Main extends Component {
 
-  constructor(props) {
-    super(props);
-    // this.handleAddStaff = this.handleAddStaff.bind(this);
-  }
-
   // Xử lí hàm thêm nhân viên
   // handleAddStaff(newStaff) {
   //   const addStaff = this.props.staffs.staffs.push(newStaff)
@@ -63,6 +58,7 @@ class Main extends Component {
     }
 
     const DepartmentWithId = ({match}) => {
+      console.log(this.props.departments.departments.filter((department) => department.id === match.params.departmentId)[0])
       return(
         <DepartmentDetail department={this.props.departments.departments.filter((department) => department.id === match.params.departmentId)[0]}
         staff={this.props.staffs.staffs.filter((staff) => staff.departmentId === match.params.departmentId)}

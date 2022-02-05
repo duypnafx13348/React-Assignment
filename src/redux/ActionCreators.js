@@ -1,6 +1,4 @@
 import * as ActionTypes from './ActionTypes';
-import { STAFFS } from '../shared/staffs';
-import { DEPARTMENTS } from '../shared/staffs'; 
 import { baseUrl } from '../shared/baseUrl';
 
     // Thêm Nhân Viên (addStaff)

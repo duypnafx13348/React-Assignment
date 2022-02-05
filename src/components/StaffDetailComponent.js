@@ -4,7 +4,7 @@ import FormUpdate from './FormUpdateComponent';
 import { Link } from 'react-router-dom';
 import dateFormat from 'dateformat';
 import { Loading } from './LoadingComponent';
-import { FadeTransform, Fade, Stagger } from 'react-animation-components';
+import { FadeTransform } from 'react-animation-components';
 
 function RenderStaff({staff, department}) {
     // console.log(staff.departmentId);
