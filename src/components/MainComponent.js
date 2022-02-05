@@ -9,6 +9,7 @@ import Footer from './FooterComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fetchStaffs, fetchDepartments, fetchStaffsSalary, postStaff, deleteStaff, updateStaff } from '../redux/ActionCreators';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 const mapStateToProps = state => {
   return {
@@ -72,20 +73,24 @@ class Main extends Component {
     return (
         <div className="App">
         <Header />
-        <Switch>
-        <Route exact path="/stafflist" component={() => 
-            <StaffList 
-              staffs={this.props.staffs} 
-              onAddStaff={this.props.postStaff} 
-              onDeleteStaff={this.props.deleteStaff}
-            />}
-         />
-        <Route path="/stafflist/:staffId" component={StaffWithId} />
-        <Route exact path="/department" component={() => <Department departments={this.props.departments} />} />
-        <Route path="/department/:departmentId" component={DepartmentWithId} />
-        <Route exact path="/salary" component={() => <Salary staffs={this.props.staffs} />} />
-        <Redirect to="/stafflist" />
-        </Switch>
+        <TransitionGroup>
+          <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
+            <Switch>
+            <Route exact path="/stafflist" component={() => 
+                <StaffList 
+                  staffs={this.props.staffs} 
+                  onAddStaff={this.props.postStaff} 
+                  onDeleteStaff={this.props.deleteStaff}
+                />}
+            />
+            <Route path="/stafflist/:staffId" component={StaffWithId} />
+            <Route exact path="/department" component={() => <Department departments={this.props.departments} />} />
+            <Route path="/department/:departmentId" component={DepartmentWithId} />
+            <Route exact path="/salary" component={() => <Salary staffs={this.props.staffs} />} />
+            <Redirect to="/stafflist" />
+            </Switch>
+          </CSSTransition>
+        </TransitionGroup>
         <Footer />
       </div>
     );
