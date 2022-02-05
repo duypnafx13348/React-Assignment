@@ -4,12 +4,17 @@ import FormUpdate from './FormUpdateComponent';
 import { Link } from 'react-router-dom';
 import dateFormat from 'dateformat';
 import { Loading } from './LoadingComponent';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 function RenderStaff({staff, department}) {
     // console.log(staff.departmentId);
     // console.log(dept.name);
     return(
         <div className="col-12">
+            <FadeTransform in
+                transformProps={{
+                exitTransform: 'scale(0.5) translateY(-50%)'
+            }}>
                 <div className="row">
                     <div className="col-12 col-md-4 col-lg-3">
                         <CardImg width="100%" src={staff.image} alt={staff.name} />
@@ -24,6 +29,7 @@ function RenderStaff({staff, department}) {
                         <CardText>Số ngày đã làm thêm: {staff.overTime}</CardText>
                     </div>
                 </div>
+            </FadeTransform>
         </div>
     );
 }
