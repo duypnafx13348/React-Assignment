@@ -8,7 +8,7 @@ import { FadeTransform } from 'react-animation-components';
 
 function RenderStaff({staff, department}) {
     // console.log(staff.departmentId);
-    // console.log(dept.name);
+    if (staff != null && department != null) {
     return(
         <div className="col-12">
             <FadeTransform in
@@ -32,6 +32,7 @@ function RenderStaff({staff, department}) {
             </FadeTransform>
         </div>
     );
+        }
 }
 
 const StaffDetail = (props) => {
@@ -69,7 +70,8 @@ const StaffDetail = (props) => {
                     </div>                    
                 </div>
                 <div className="row">
-                    <RenderStaff staff={props.staff}
+                    <RenderStaff
+                    staff={props.staff}
                     department={props.department.filter((dept) => dept.id === props.staff.departmentId)[0]} />
                     <FormUpdate onUpdate={props.onUpdateStaff} staff={props.staff} />
                 </div>

@@ -82,7 +82,6 @@ class StaffList extends Component {
     this.setState({
       othername: valueInput
     });
-    console.log(valueInput);
     event.preventDefault();
   }
 

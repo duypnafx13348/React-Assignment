@@ -18,7 +18,7 @@ export const Staffs = (state = {
             const newStaffList = state.staffs.filter((staff) => staff.id !== (action.payload));
             return { ...state, isLoading: false, errMess: null, staffs: newStaffList };
         case ActionTypes.UPDATE_STAFF:
-            console.log(action.payload)
+            //console.log(action.payload)
             return {...state, isLoading: false, errMess: null, staffs: action.payload};
         default:
             return state;

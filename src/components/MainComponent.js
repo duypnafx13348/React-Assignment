@@ -8,7 +8,7 @@ import Salary from './SalaryComponent';
 import Footer from './FooterComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchStaffs, fetchDepartments, fetchStaffsSalary, postStaff, deleteStaff, updateStaff } from '../redux/ActionCreators';
+import { fetchStaffs, fetchDepartments, fetchStaffsSalary, postStaff, deleteStaff, patchStaff } from '../redux/ActionCreators';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 const mapStateToProps = state => {
@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchDepartments: () => {dispatch(fetchDepartments())},
   fetchStaffsSalary: () => {dispatch(fetchStaffsSalary())},
   deleteStaff: (id) => dispatch(deleteStaff(id)),
-  updateStaff: (staff) => dispatch(updateStaff(staff)),
+  patchStaff: (staff) => dispatch(patchStaff(staff)),
 });
 class Main extends Component {
 
@@ -44,18 +44,18 @@ class Main extends Component {
   }
   
   render() {
-    
+    console.log(this.props.staffs)
     const StaffWithId = ({match}) => {
-        return(
+      return(
           <StaffDetail staff={this.props.staffs.staffs.filter((staff) => staff.id === parseInt(match.params.staffId,10))[0]}
           isLoading={this.props.staffs.isLoading}
           errMess={this.props.staffs.errMess}
           postStaff={this.props.postStaff}
           department={this.props.departments.departments}
-          onUpdateStaff={this.props.updateStaff}
+          onUpdateStaff={this.props.patchStaff}
           />
         );
-    }
+      }
 
     const DepartmentWithId = ({match}) => {
       console.log(this.props.departments.departments.filter((department) => department.id === match.params.departmentId)[0])

@@ -71,6 +71,7 @@ export const patchStaff = (staff) => (dispatch) => {
     .then(
       (response) => {
         if (response.ok) {
+            console.log('RESPONSE ' + JSON.stringify(response));
           return response;
         } else {
           var error = new Error("Error " + response.status + ": " + response.statusText);
